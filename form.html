@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style type="text/css">
+    body {
+      font-family: arial;
+      margin: 20px;
+    }
+    .layout {
+      width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 0 10px rgba(0,0,0,.5);
+      padding-bottom: 15px;
+    }
+    .content > h2 {
+      background: #009688;
+      color: #fff;
+      padding: 15px;
+    }
+    .content form {
+      margin: 15px;
+      color: #757575;
+    }
+    .content div {
+      margin-top: 15px;
+    }
+    .content div.text {
+      overflow-x: scroll;
+    }
+    .content input[type="text"],
+    .content textarea {
+      display: block;
+      width: 100%;
+      border: none;
+      margin-top: 10px;
+      padding: 10px;
+    }
+    .content input[type="text"]:focus,
+    .content textarea:focus {
+      outline: none;
+    }
+    .content div.option {
+      width: 50%;
+      float: left;
+      line-height: 1.5;
+    }
+    .content .half {
+      margin-top: 0;
+      overflow: hidden;
+    }
+    .content button {
+      border: none;
+      background: #009688;
+      color: #fff;
+      padding: 10px 20px;
+    }
+	</style>
+</head>
+<body>
+  <div class="layout">
+    <div class="content">
+      <h2>信息收集表</h2>
+      <form action="#" method="post">
+        <div class="text">
+          <label for="name">姓名</label>
+            <input type="text" name="name" id="name">
+        </div>
+        <div class="text">
+          <label for="qq">QQ</label>
+            <input type="text" name="qq" id="qq">
+        </div>
+        <div class="text">
+          <label for="words">要说的话</label>
+            <textarea name="words" id="words" rows="5"></textarea>
+        </div>
+        <div class="half">
+          <div class="option">
+            <input type="checkbox" name="food" value="milk" id="milk" checked>
+            <label for="milk">Milk</label>
+            <br>
+            <input type="checkbox" name="food" value="sugar" id="sugar">
+            <label for="sugar">Sugar</label>
+            <br>
+            <input type="checkbox" name="food" value="lemon" id="lemon">
+            <label for="lemon">Lemon</label>
+          </div>
+          <div class="option">
+            <input type="radio" name="gender" value="male" id="male" checked>
+            <label for="male">Male</label>
+            <br>
+            <input type="radio" name="gender" value="female" id="female">
+            <label for="female">Female</label>
+          </div>
+        </div>
+        <div class="btn"><button type="submit">提交</button></div>
+      </form>  
+    </div>
+  </div>
+</body>
+</html>

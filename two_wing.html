@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Holy Grail</title>
+	<title>双飞翼布局</title>
 	<style type="text/css">
 		body {
 			text-align: center;
@@ -20,29 +20,27 @@
 			height: 300px;
 			line-height: 300px;
 		}
-		.content {
-			padding-left: 200px;
-			padding-right: 150px;
-		}
 		.content > div {
 			float: left;
 			position: relative;
 		}
 		.main {
 			width: 100%;
+		}
+		.wrap {
+			margin-left: 220px;
+			margin-right: 170px;
 			background: gold;
+
 		}
 		.aside {
-			left: -200px;
 			width: 200px;
 			margin-left: -100%;
 			background: seagreen;
 		}
 		.extra {
 			width: 150px;
-			/*left: 150px;*/
-			/*margin-left: -150px;*/
-			margin-right: -150px;
+			margin-left: -150px;
 			background: royalblue;
 		}
 		.clearfix::after {
@@ -55,7 +53,9 @@
 <body>
 <header>header</header>
 <div class="content clearfix">
-	<div class="main">content</div>
+	<div class="main">
+		<div class="wrap">content</div>
+	</div>
 	<div class="aside">aside</div>
 	<div class="extra">extra</div>
 </div>

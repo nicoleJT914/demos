@@ -10,37 +10,75 @@
 			padding: 0;
 			list-style: none;
 		}
+		body {
+			color: #666;
+			text-align: center;
+		}
+		.layout {
+			width: 820px;
+			margin: 0 auto;
+		}
+		header {
+			border-bottom: 1px solid #ccc;
+		}
+		header h1 {
+			margin: 15px auto 10px auto;
+			letter-spacing: 2px;
+		}
 		.ct {
 			overflow: hidden;
-			width: 640px;
-			border: 1px dashed orange;
-			margin: 0 auto;
 		}
 		.ct .item {
 			float: left;
-			width: 200px;
-			height: 200px;
-			background: gold;
+			width: 260px;
+			background: #fff;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 			margin-left: 20px;
 			margin-bottom: 20px;
 		}
 		.ct > ul {
+			margin-top: 40px;
 			margin-left: -20px;
+		}
+		.ct .img {
+			width: 260px;
+			height: 173px;
+			background: url(img/landscape.png) no-repeat;
+			opacity: 0.7;
+			background-size: 260px;
 		}
 	</style>
 </head>
 <body>
-	<div class="ct">
+	<header class="layout">
+		<h1>风景列表</h1>
+	</header>
+	<div class="ct layout">
 		<ul>
-			<li class="item">1</li>
-			<li class="item">2</li>
-			<li class="item">3</li>
-			<li class="item">4</li>
-			<li class="item">5</li>
-			<li class="item">6</li>
-			<li class="item">7</li>
-			<li class="item">8</li>
-			<li class="item">9</li>
+			<li class="item">
+				<div class="img"></div>
+				<div class="detail"><p>风景如画</p></div>
+			</li>
+			<li class="item">
+				<div class="img"></div>
+				<div class="detail"><p>风景如画</p></div>
+			</li>
+			<li class="item">
+				<div class="img"></div>
+				<div class="detail"><p>风景如画</p></div>
+			</li>
+			<li class="item">
+				<div class="img"></div>
+				<div class="detail"><p>风景如画</p></div>
+			</li>
+			<li class="item">
+				<div class="img"></div>
+				<div class="detail"><p>风景如画</p></div>
+			</li>
+			<li class="item">
+				<div class="img"></div>
+				<div class="detail"><p>风景如画</p></div>
+			</li>
 		</ul>
 	</div>
 </body>

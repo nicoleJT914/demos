@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>two col layout(left fiexd width)</title>
+	<style type="text/css">
+		header, footer {
+			height: 30px;
+			background: #ccc;
+		}
+		.aside {
+			float: left;
+			width: 200px;
+			height: 500px;
+			background: royalblue;
+		}
+		.main {
+			margin-left: 220px;
+			height: 400px;
+			background: gold;
+		}
+		.clearfix::after {
+			content: "";
+			display: block;
+			clear: both;
+		}
+	</style>
+</head>
+<body>
+	<header>header</header>
+	<div id="content" class="clearfix">
+		<div class="aside">aside</div>
+		<div class="main">main</div>
+	</div>
+	<footer>footer</footer>
+</body>
+</html>

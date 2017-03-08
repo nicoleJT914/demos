@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Holy Grail</title>
+	<style type="text/css">
+		body {
+			text-align: center;
+		}
+		header,
+		footer {
+			background: #ccc;
+			height: 30px;
+			line-height: 30px;
+		}
+		.main,
+		.aside,
+		.extra {
+			height: 300px;
+			line-height: 300px;
+		}
+		.content {
+			padding-left: 200px;
+			padding-right: 150px;
+		}
+		.content > div {
+			float: left;
+			position: relative;
+		}
+		.main {
+			width: 100%;
+			background: gold;
+		}
+		.aside {
+			left: -200px;
+			width: 200px;
+			margin-left: -100%;
+			background: seagreen;
+		}
+		.extra {
+			left: 150px;
+			width: 150px;
+			margin-left: -150px;
+			background: royalblue;
+		}
+		.clearfix::after {
+			content: "";
+			display: block;
+			clear: both;
+		}
+	</style>
+</head>
+<body>
+<header>header</header>
+<div class="content clearfix">
+	<div class="main">content</div>
+	<div class="aside">aside</div>
+	<div class="extra">extra</div>
+</div>
+<footer>footer</footer>
+</body>
+</html>

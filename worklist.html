@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<title>work list</title>
+	<style type="text/css">
+		ul, 
+		li {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		a {
+			text-decoration: none;
+			color: #fff;
+		}
+		.clearfix::after {
+			content: "";
+			display: block;
+			clear: both;
+		}
+		.btn a {
+			padding: 8px 15px;
+			background: #72b890;
+			border-radius: 5px;
+		}
+		.btn a:hover {
+			cursor: pointer;
+			opacity: 0.7;
+		}
+		.selected {
+			opacity: 0.7;
+		}
+		body {
+			font-family: "Lantinghei SC", "Open Sans", Arial, "Hiragino Sans GB", "Microsoft YaHei", "\5FAE\8F6F\96C5\9ED1", "STHeiti", "WenQuanYi Micro Hei", SimSun, sans-serif;
+			color: #87968e;
+			background: #fff2e3;
+			font-size: 14px;
+		}
+		.layout {
+			width: 800px;
+			margin: 0 auto;
+			text-align: center;
+		}
+		h1 {
+			font-size: 2.5em;
+		}
+		p {
+			margin-bottom: 35px;
+		}
+		ul > li{
+			display: inline-block;
+			margin-right: 10px;
+		}
+		.img {
+			margin: 35px auto; 
+		}
+		.oper a:first-child {
+			margin-right: 20px;
+		}
+		.oper {
+			margin-bottom: 35px;
+		}
+		.author b {
+			font-weight: normal;
+			color: #72b890;
+		}
+	</style>
+</head>
+<body>
+	<div class="layout clearfix">
+		<h1>我的项目</h1>
+		<p class="detail">一句话项目介绍</p>
+		<ul class="clearfix">
+			<li class="btn selected"><a href="#">项目1</a></li>
+			<li class="btn"><a href="#">项目2</a></li>
+			<li class="btn"><a href="#">项目3</a></li>
+			<li class="btn"><a href="#">项目4</a></li>
+			<li class="btn"><a href="#">项目5</a></li>
+		</ul>
+		<div class="img"><img src="img/elephant.png" alt="项目预览图"></div>
+		<div class="oper btn">
+			<a href="#">查看源码</a>
+			<a href="#">使用说明</a>
+		</div>
+		<p class="author">作者：<b>我</b></p>
+	</div>
+</body>
+</html>

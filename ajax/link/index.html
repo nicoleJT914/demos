@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>link</title>
+    <style>
+        #ajaxButton {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+  </head>
+  <body>
+      <label>Your name: 
+      <input type="text" id="ajaxTextbox" />
+      </label>
+      <span id="ajaxButton" style="cursor: pointer; text-decoration: underline">
+        Make a request
+      </span>
+    <script>
+       (function(){
+           var httpRequest
+           /*document.getElementById('ajaxButton').addEventListener('click',function(){
+               makeRequest('test.html')
+           })
+             function makeRequest(url) {
+             httpRequest = new XMLHttpRequest()
+             if(!httpRequest) {
+               alert('Giving up :( Cannot create an XMLHTTP instance')
+               return false
+             }
+             httpRequest.onreadystatechange = alertContents
+             httpRequest.open('GET', url)
+             httpRequest.send()
+           }
+           function alertContents() {
+             if(httpRequest.readyState === XMLHttpRequest.DONE) {
+               if(httpRequest.status === 200) {
+                 alert(httpRequest.responseText)
+               }else {
+                 alert('There was a problem with the request.')
+               }
+             }
+           }*/
+           document.getElementById('ajaxButton').addEventListener('click',function(){
+              var userName = document.getElementById('ajaxTextbox').value
+              makeRequest('/test',userName)
+           })
+           function makeRequest(url, userName) {
+             httpRequest = new XMLHttpRequest()
+             httpRequest.onreadystatechange = alertContents
+             httpRequest.open('POST', url)
+             httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+             httpRequest.send('userName='+userName)
+           }
+           function alertContents() {
+             if(httpRequest.readyState === XMLHttpRequest.DONE) {
+               if(httpRequest.status === 200) {
+                 var response = JSON.parse(httpRequest.responseText)
+                 console.log(response)
+                 alert(response.computedString)
+               }else {
+                 alert('There was a problem with the request.')
+               }
+             }
+           }
+       })()
+    </script>
+  </body>
+</html>

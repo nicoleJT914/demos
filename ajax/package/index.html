@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>link</title>
+    <style>
+        #ajaxButton {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+  </head>
+  <body>
+      <a id="btn" href="#">click me!</a>
+    <script>
+        function ajax(opts){
+          var httpRequest = new XMLHttpRequest()
+          httpRequest.onreadystatechange = alertContents
+          function alertContents() {
+            if(httpRequest.readyState === XMLHttpRequest.DONE) {
+              if(httpRequest.status === 200) {
+                var response = JSON.parse(httpRequest.responseText)
+                opts.success(response)
+              } else {
+                opts.error()
+              }
+            }
+          }
+          var query = ''
+          for(var key in opts.data) {
+            query += key + '=' + opts.data[key] + '&'
+          }
+          query = query.substr(0, query.length-1)
+          if(opts.type.toLowerCase() === 'get') {
+            httpRequest.open(opts.type, opts.url+'?'+query, true)
+            httpRequest.send()
+          }
+          if(opts.type.toLowerCase() === 'post') {
+            httpRequest.open(opts.type, opts.url, true)
+            httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+            httpRequest.send(query)
+          }
+        }
+        document.querySelector('#btn').addEventListener('click', function(){
+            ajax({
+                url: '/login',   //接口地址
+                type: 'post',               // 类型， post 或者 get,
+                data: {
+                    username: 'xiaoming',
+                    password: 'abcd1234'
+                },
+                success: function(ret){
+                    console.log(ret);       // {status: 0}
+                },
+                error: function(){
+                console.log('出错了')
+                }
+            })
+        });      
+    </script>
+  </body>
+</html>

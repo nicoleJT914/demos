@@ -4,7 +4,6 @@ app.get('/login', function(req, res) {
     res.send({
         userName: userName,
         password: pwd,
-        status: 0
     })
 })
 app.post('/login', function(req, res) {
@@ -13,6 +12,5 @@ app.post('/login', function(req, res) {
     res.send({
         userName: userName,
         password: pwd,
-        status: 0
     })
 })

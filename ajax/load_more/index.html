@@ -60,51 +60,13 @@
         //var isDataArrive = false
         btn.classList.add('loading')
         getData()
-        function getData() {
-          ajax({
-            url: '/load',
-            type: 'get',
-            data: {
-              curIdx: start,
-              length: len
-            },
-            success: function(res){
-              var data = res.data
-              console.log(data)
-              render(data)
-              //isDataArrive = true
-              btn.classList.remove('loading')
-            },
-            error: function(res) {
-              console.log(res.status)
-            }
-          })
-          btn.classList.add('loading')
-        }
         
         btn.addEventListener('click',function(e) {
           e.preventDefault()
           if(btn.classList.contains('loading')) {
             return
           }
-          ajax({
-            url: '/load',
-            type: 'get',
-            data: {
-              curIdx: start,
-              length: len
-            },
-            success: function(res){
-              var data = res.data
-              console.log(data)
-              render(data)
-              isDataArrive = true
-              btn.classList.remove('loading')
-            },
-            error: function(res) {
-              console.log(res.status)
-            }
-          })
+          getData()
           isDataArrive = false
           btn.classList.add('loading')
         })
@@ -149,6 +111,29 @@
             httpRequest.send(query)
           }
         }
+
+        function getData() {
+          ajax({
+            url: '/load',
+            type: 'get',
+            data: {
+              curIdx: start,
+              length: len
+            },
+            success: function(res){
+              var data = res.data
+              console.log(data)
+              render(data)
+              //isDataArrive = true
+              btn.classList.remove('loading')
+            },
+            error: function(res) {
+              console.log(res.status)
+            }
+          })
+          btn.classList.add('loading')
+        }
+
     </script>
   </body>
 </html>

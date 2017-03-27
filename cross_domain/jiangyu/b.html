@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>降域</title>
+    <style>
+        body {
+            padding: 30px;
+        }
+    </style>
+  </head>
+  <body>
+    <input id="input" type="text" placeholder="http://b.nicole.com:8080/b.html">
+    <script>
+        document.querySelector('#input').addEventListener('input', function() {
+            console.log(this.value)
+            window.parent.document.querySelector('input').value = this.value
+        })
+        document.domain = 'nicole.com'
+    </script>
+  </body>
+</html>

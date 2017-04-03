@@ -1,0 +1,107 @@
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+#ct {
+  margin: 20px;
+  color: #333;
+}
+.clearfix::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.container {
+  margin-bottom: 20px;
+}
+/******导航条******/
+.nav {
+  border: 1px solid #ccc;
+  border-bottom: none;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  font-size: 14px;
+  float: left;
+}
+.nav li{
+  float: left;
+}
+.nav li a {
+  display: block;
+  margin: 10px 0;
+  padding: 0 10px;
+  border-right: 1px solid #ccc;
+}
+.nav li:last-child a {
+  border-right: none;
+}
+.tab.active {
+  color: #c81623;
+  background: #ccc;
+}
+/******商品展示******/
+.panel-ct {
+  width: 720px;
+  border: 1px solid #ccc;
+}
+.panel { 
+  display: none;
+}
+.panel.active {
+  display: block;
+}
+.product-ct {
+  margin-bottom: 15px;
+}
+.product {
+  box-sizing: border-box;
+  position: relative;
+  float: left;
+  width: 220px;
+  margin-left: 15px;
+  margin-top: 15px;
+  padding: 20px;
+  border: 1px solid #eee;
+  background: #fff;
+  text-align: center;
+  font-size: 12px;
+}
+.cover {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,.3);
+  transition: all 0.3s;
+}
+.cover .btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 10px 15px;
+  color: #c81623;
+  border: 1px solid #c81623;
+  border-radius: 3px;
+  background: #fff;
+}
+.hover {
+  display: block;
+}
+.product .pro-title {
+  text-align: left;
+  height: 36px;
+  line-height: 18px;
+} 
+.product .pro-price {
+  color: red;
+  text-align: left;
+  line-height: 20px;
+}

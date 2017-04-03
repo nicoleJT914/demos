@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>loading more</title>
+    <style>
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      a:hover {
+        background: #ffc700;
+      }
+      ul {
+        margin: 0;
+        list-style: none;
+      }
+      li {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 10px;
+      }
+      li:hover {
+        background: gold;
+      }
+      .btn {
+        text-align: center;
+        display: block;
+        width: 100px;
+        padding: 20px 10px;
+        border-radius: 5px;
+        background: gold;
+        margin: 0 auto;
+        position: relative;
+      }
+      .loading {
+        cursor: not-allowed; 
+      }
+      .spin {
+        width: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <ul id="ct">
+    </ul>
+    <a href="javascript:void(0)" id="load-more" class="btn">加载更多</a>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script>
+      
+        var $btn = $('#load-more')
+        var $ct = $('#ct')
+        var start = 1
+        var len = 5
+        $btn.addClass('loading').html('<img class="spin" src="spin.gif">')
+        getData()
+        
+        $btn.on('click',function(e) {
+          e.preventDefault()
+          if($btn.hasClass('loading')) {
+            return
+          }
+          $btn.addClass('loading').html('<img class="spin" src="spin.gif">')
+          getData()
+        })
+
+        function render(data) {
+          var fragment = document.createDocumentFragment()
+          var text = ''
+          for(var i=0;i<data.length;i++) {
+            var li = document.createElement('li')
+            li.innerText = '列表'+data[i]
+            fragment.appendChild(li)
+          }
+          ct.appendChild(fragment)
+          start += len
+        }
+
+        function getData() {
+          $.ajax({
+            url: '/load',
+            type: 'get',
+            data: {
+              curIdx: start,
+              length: len
+            }
+          }).done(function(res) {
+              var data = res.data
+              console.log(data)
+              render(data)
+              $btn.removeClass('loading').text('加载更多')
+          }).fail(function(res) {
+              console.log(res.status)
+          })
+        }
+
+    </script>
+  </body>
+</html>

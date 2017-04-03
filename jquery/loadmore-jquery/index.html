@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>使用jquery实现加载更多</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+  </head>
+  <body>
+    <div id="container">
+      <h1>珠宝首饰</h1>
+      <div class="product-container clearfix">
+        <ul class="clearfix">
+          <li class="product">
+            <div class="cover">
+              <a href="#" class="buy-now">立即抢购</a>
+            </div>
+            <a href="#">
+              <img src="http://img10.360buyimg.com/N3/jfs/t1360/330/897475737/123557/23624706/55b05e25N13d4ec5e.jpg">
+              <div class="product-title">藏美千足金和田玉金镶藏美千足金和田玉金镶</div>
+              <div class="product-price">￥1699.00</div>
+            </a>
+          </li>
+          <li class="product">
+            <div class="cover">
+              <a href="#" class="buy-now">立即抢购</a>
+            </div>
+            <a href="#">
+              <img src="http://img10.360buyimg.com/N3/jfs/t1360/330/897475737/123557/23624706/55b05e25N13d4ec5e.jpg">
+              <div class="product-title">藏美千足金和田玉金镶藏美千足金和田玉金镶</div>
+              <div class="product-price">￥1699.00</div>
+            </a>
+          </li>
+          <li class="product">
+            <div class="cover">
+              <a href="#" class="buy-now">立即抢购</a>
+            </div>
+            <a href="#">
+              <img src="http://img10.360buyimg.com/N3/jfs/t1360/330/897475737/123557/23624706/55b05e25N13d4ec5e.jpg">
+              <div class="product-title">藏美千足金和田玉金镶藏美千足金和田玉金镶</div>
+              <div class="product-price">￥1699.00</div>
+            </a>
+          </li>
+          <li class="product">
+            <div class="cover">
+              <a href="#" class="buy-now">立即抢购</a>
+            </div>
+            <a href="#">
+              <img src="http://img10.360buyimg.com/N3/jfs/t1360/330/897475737/123557/23624706/55b05e25N13d4ec5e.jpg">
+              <div class="product-title">藏美千足金和田玉金镶藏美千足金和田玉金镶</div>
+              <div class="product-price">￥1699.00</div>
+            </a>
+          </li>
+          <li class="product">
+            <div class="cover">
+              <a href="#" class="buy-now">立即抢购</a>
+            </div>
+            <a href="#">
+              <img src="http://img10.360buyimg.com/N3/jfs/t1360/330/897475737/123557/23624706/55b05e25N13d4ec5e.jpg">
+              <div class="product-title">藏美千足金和田玉金镶藏美千足金和田玉金镶</div>
+              <div class="product-price">￥1699.00</div>
+            </a>
+          </li>
+          <li class="product">
+            <div class="cover">
+              <a href="#" class="buy-now">立即抢购</a>
+            </div>
+            <a href="#">
+              <img src="http://img10.360buyimg.com/N3/jfs/t1360/330/897475737/123557/23624706/55b05e25N13d4ec5e.jpg">
+              <div class="product-title">藏美千足金和田玉金镶藏美千足金和田玉金镶</div>
+              <div class="product-price">￥1699.00</div>
+            </a>
+          </li>     
+        </ul>
+      </div>
+      <a href="javascript:void(0)" class="load-button">加载更多</a>
+    </div>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script>
+      var products = [
+        {
+          img: 'http://img10.360buyimg.com/N3/jfs/t2242/92/1446546284/374195/9196ac66/56af0958N1a723458.jpg',
+          name: '珂兰 黄金手 猴哥款',
+          price: '￥405.00'
+        },{
+          img: 'http://img10.360buyimg.com/N3/jfs/t2242/92/1446546284/374195/9196ac66/56af0958N1a723458.jpg',
+          name: '珂兰 黄金转运珠 猴哥款',
+          price: '￥100.00'
+        },{
+          img: 'http://img10.360buyimg.com/N3/jfs/t2242/92/1446546284/374195/9196ac66/56af0958N1a723458.jpg',
+          name: '珂兰 黄金手链 3D猴哥款',
+          price: '￥45.00'
+        }
+      ]
+
+      function getHtml(product) {
+        return `
+          <li class="product">
+            <div class="cover">
+              <a href="#" class="buy-now">立即抢购</a>
+            </div>
+            <a href="#">
+              <img src="${product.img}">
+              <div class="product-title">${product.name}</div>
+              <div class="product-price">${product.price}</div>
+            </a>
+          </li>     
+        `
+      }
+
+      $('.load-button').on('click', function() {
+        var stringProducts = products.map(function(product) {
+          return getHtml(product)
+        })
+        var htmlProducts = stringProducts.join('')
+        console.log(htmlProducts)
+        $('ul').append($(htmlProducts))
+      })
+      $('ul').on('mouseenter', '.product', function() {
+        $(this).children('.cover').addClass('hover')
+      })
+      $('ul').on('mouseleave', '.product', function() {
+        $(this).children('.cover').removeClass('hover')
+      })
+    </script>
+  </body>
+</html>

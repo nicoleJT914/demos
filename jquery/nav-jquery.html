@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>使用jquery实现导航条</title>
+    <style type="text/css">
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      #ct {
+        margin: 20px;
+      }
+      #nav {
+        border: 1px solid #ccc;
+        width: 200px;
+        background: #c7171e;     
+      }
+      .category {
+        position: relative;
+      }
+      .category:hover {
+        background: #c1171e;
+      }
+      .category > a{
+        display: block;
+        margin: 0 10px;
+        padding: 10px;
+        border-bottom: 1px dotted #de272e;
+        color: #fff;
+      }
+      .category:last-child {
+        border-bottom: none;
+      }
+      .icon {
+        color: #fff;
+        position: absolute;
+        top:10px; right: 10px;
+        cursor: pointer;
+      }
+      .panel {
+        position: absolute;
+        top: 0; left: 200px;
+        width: 200px;
+        background: #fff;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        display: none;
+      }
+      .panel > li {
+        width: 50%;
+        float: left;
+        text-align: center;
+      }
+      .panel > li > a {
+        display: inline-block;
+        margin: 10px 0;
+      }
+      .show {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ct">
+      <ul id="nav">
+        <li class="category">
+          <a href="#">珠宝玉器</a>
+          <span class="icon">></span>
+          <ul class="panel">
+            <li><a href="#">翡翠</a></li>
+            <li><a href="#">翡翠</a></li>
+            <li><a href="#">翡翠</a></li>
+            <li><a href="#">翡翠</a></li>
+            <li><a href="#">翡翠</a></li>
+            <li><a href="#">翡翠</a></li>
+            <li><a href="#">翡翠</a></li>
+            <li><a href="#">翡翠</a></li>
+            <li><a href="#">翡翠</a></li>
+            <li><a href="#">翡翠</a></li>
+          </ul>
+        </li>
+        <li class="category">
+          <a href="#">珠宝玉器</a>
+          <span class="icon">></span>
+          <ul class="panel">
+            <li><a href="#">玉石</a></li>
+            <li><a href="#">玉石</a></li>
+            <li><a href="#">玉石</a></li>
+            <li><a href="#">玉石</a></li>
+            <li><a href="#">玉石</a></li>
+            <li><a href="#">玉石</a></li>  
+          </ul>  
+        </li>
+        <li class="category">
+          <a href="#">珠宝玉器</a>
+          <span class="icon">></span>
+          <ul class="panel">
+            <li><a href="#">水晶</a></li>
+            <li><a href="#">水晶</a></li>
+            <li><a href="#">水晶</a></li>
+            <li><a href="#">水晶</a></li> 
+          </ul> 
+        </li>
+        <li class="category">
+          <a href="#">珠宝玉器</a>
+          <span class="icon">></span>
+          <ul class="panel">
+            <li><a href="#">玛瑙</a></li>
+            <li><a href="#">玛瑙</a></li>
+            <li><a href="#">玛瑙</a></li>
+            <li><a href="#">玛瑙</a></li>
+            <li><a href="#">玛瑙</a></li>
+            <li><a href="#">玛瑙</a></li> 
+          </ul>  
+        </li>
+        <li class="category">
+          <a href="#">珠宝玉器</a>
+          <span class="icon">></span>
+          <ul class="panel">
+            <li><a href="#">琥珀</a></li>
+            <li><a href="#">琥珀</a></li>
+            <li><a href="#">琥珀</a></li>
+            <li><a href="#">琥珀</a></li>
+            <li><a href="#">琥珀</a></li>
+            <li><a href="#">琥珀</a></li> 
+          </ul>  
+        </li>
+      </ul>
+    </div>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script>
+      $ca = $('.category')
+      $panel = $('.panel')
+      $ca.on('mouseenter', function(e){
+        $this = $(this)
+        $this.siblings().children('.panel').removeClass('show')
+        $this.children('.panel').addClass('show')
+      })
+      $ca.on('mouseleave', function(e){
+        $this = $(this)
+        $this.children('.panel').removeClass('show')
+      })
+    </script>
+  </body>
+</html>

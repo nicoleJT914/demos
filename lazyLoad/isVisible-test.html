@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>isVisible-test</title>
+    <style type="text/css">
+      div {
+        margin: 1000px auto;
+        width: 100px;
+        height: 100px;
+        background: gold;
+      }
+    </style>
+  </head>
+  <body>
+    <div>Can you see me?</div>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script>
+      var $div = $('div')
+      $(window).on('scroll', function(e) {
+        if(isVisible($div) && !$div.hasClass('showed')) {
+          $div.addClass('showed')
+          console.log(true)
+        }
+      })
+      function isVisible($node){
+        if ($node.offset().top < $(window).height()+$(window).scrollTop() && $(window).scrollTop() < $node.offset().top+$node.height()) {
+          return true
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>lazy load of news on scroll</title>
+    <style type="text/css">
+      body {
+        color: #333;
+      }
+      ul, h2, p  {
+        margin: 0;
+        padding: 0;
+      }
+      a {
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+      }
+      .clearfix::after {
+        content: '';
+        display: block;
+        clear: both;
+      }
+      .container {
+        max-width: 500px;
+        padding: 30px 10px;
+        margin: 0 auto;
+      }
+      .item {
+        list-style: none;
+        padding: 10px 0;
+      }
+      .item .show-pic {
+        float: left;
+      }
+      .item .show-pic img{
+        width: 50px;
+        height: 50px;
+      }
+      .item .info {
+        margin-left: 60px;
+      }
+      .item .info h2 {
+        font-size: 16px;
+        height: 30px;
+      }
+      .item .info p {
+        font-size: 14px;
+        color: #aaa;
+        line-height: 1;
+      }
+      .btn {
+        display: block;
+        padding: 10px 20px;
+        background: #ccc;
+        border-radius: 3px;
+        text-align: center
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <ul class="clearfix">
+        
+      </ul>
+      <a class="btn load-more">点击查看更多</a>
+    </div>
+      
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script>
+      var pageIndex = 0
+      var $ul = $('ul')
+
+      loadNews()
+
+      $('.load-more').on('click', function() {
+        loadNews()
+      })
+
+      function loadNews() {
+        $.get('/getNews',{page: pageIndex}).done(function(ret) {
+          if(ret.status === 0) {
+            appendHtml(ret.data)
+            pageIndex++
+          }else {
+            alert('Getting news failed')
+          }
+        }).fail(function(ret) {
+            alert('System error')
+        })
+      }
+
+      function appendHtml(news) {
+        if (news.length === 0) {
+          $('.load-more').remove()
+          $('.container').append('<p class="btn data-over">没有更多数据了</p>')
+        }
+        var html = news.map(function(item) {
+          return `
+            <li class="item clearfix">
+              <div class="show-pic">
+                <a href="${item.link}">
+                  <img src="${item.img}">
+                </a>
+              </div>
+              <div class="info">
+                <h2><a href="${item.link}">${item.title}</a></h2>
+                <p>${item.brif}</p>
+              </div>
+            </li>
+          `
+        }).join('')
+        $ul.append(html) 
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>modal component</title>
+  <style>
+    h4, p {
+      margin: 0;
+      padding: 0;
+    }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #000;
+      background-color: rgba(0,0,0,.4);
+      z-index: 100;
+    }
+    .modal-content {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 400px;
+      border: 1px solid #888;
+      border-radius: 5px;
+      background: #fefefe;
+      /* box-shadow: 0 0 0 1000px rgba(0,0,0,.5); */
+    }
+
+    .modal-content header {
+      padding: 15px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .modal-content header .icon-close {
+      float: right;
+      color: #aaa;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .modal-content header .icon-close:hover,
+    .modal-content header .icon-close:focus {
+      color: #000;
+      cursor: pointer;
+    }
+    .modal-content main {
+      padding: 15px;
+      line-height: 1.2;
+    }
+    .modal-content footer {
+      padding: 15px;
+      border-top: 1px solid #e5e5e5;
+      text-align: right;
+    }
+    .modal-content footer button {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 6px 12px;
+      cursor: pointer;
+      outline: none;
+      letter-spacing: 3px;
+    }
+    .modal-content footer button:active {
+      background: #337ab7;
+    }
+    .modal-content footer button + button {
+      margin-left: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <button id='btn'>Open Modal</button>
+  <script>
+    function Modal(options) {
+      this.options = options
+      this._getHtml()
+      this._bindEvents()
+      this._mount()
+    }
+
+    //生成modal所需的HTML结构
+    Modal.prototype._getHtml = function() {
+      var {
+        title, content, buttons, buttonCallbacks
+      } = this.options
+      var div = this.div = document.createElement('div')
+      div.className = 'modal'
+      var buttonString = buttons.map(function(text, index) {
+        return `<button data-index=${index}>${text}</button>`
+      }).join('')
+
+      var html = `
+    <div class="modal-content">
+      <header>
+        <span class="icon-close">&times;</span>
+        <h4>${title}</h4>
+      </header>
+      <main>
+        <p>${content}</p>
+      </main>
+      <footer>
+        ${buttonString}
+      </footer>
+    </div>
+      `
+      div.innerHTML = html
+      return div
+    }
+
+    // 为modal绑定事件
+    Modal.prototype._bindEvents = function(div, buttonCallbacks) {
+      var div = this.div
+      var buttonCallbacks = this.options.buttonCallbacks
+      var modal = this
+      div.addEventListener('click', function(e) {
+        if (e.target.tagName === 'BUTTON') {
+          var index = parseInt(e.target.getAttribute('data-index'), 10)
+          if (buttonCallbacks[index].call() != false) {
+            modal.close(div)
+          }
+        } else if (e.target.className === "icon-close") {
+          modal.close(div)
+        }
+      })
+      window.addEventListener('click', function(e) {
+        if(e.target === div) {
+          modal.close(div)
+        }
+      })
+    }
+
+    // 关闭modal
+    Modal.prototype.close = function() {
+      this.div.parentNode.removeChild(this.div)
+    }
+
+    // 将modal的html结构加到在body中
+    Modal.prototype._mount = function() {
+      document.body.appendChild(this.div)
+    }
+
+    document.getElementById('btn').addEventListener('click', function() {
+      var modal = new Modal({
+        title: '标题',
+        content: '你确定要删除吗?',
+        buttons: ['取消', '确定'],
+        buttonCallbacks: [function() {
+          console.log('取消了')
+        }, function() {
+          console.log('确定了')
+          return false
+        }]
+      })
+    })
+  </script>
+</body>
+  
+</html>

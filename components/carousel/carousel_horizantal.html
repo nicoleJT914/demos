@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Carousel accomplished by "postion"</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    .clearfix::after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+    .carousel-container {
+      width: 700px;
+      position: relative;
+      margin: 0 auto;
+      padding: 50px;
+    }
+    .carousel-list {
+      width: 600px;
+      margin: 0 auto;
+      position: relative; 
+      overflow: hidden; 
+    }
+    .carousel-track {
+      width: 3600px;
+      position: relative;
+    }
+    .slide {
+      width: 600px;
+      float: left;
+    }
+    .slide img {
+      width: 100%;
+    }
+    .prev, .next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: #fff;
+      padding: 16px;
+      border-radius: 0 3px 3px 0;
+      cursor: pointer;
+    }
+    .next {
+      right: 0;
+      border-radius: 3px 0 0 3px;
+    }
+    .prev:hover, .next:hover {
+      background: rgba(0, 0, 0, .8);
+    }
+    .dots-area {
+      text-align: center;
+    }
+    .dot{
+      display: inline-block;
+      width: 13px;
+      height: 13px;
+      background: #bbb;
+      border-radius: 50%;
+      margin: 10px 4px;
+      cursor: pointer;
+    }
+    .dot.active, .dot:hover {
+       background-color: #717171;
+    }
+  </style>
+</head>
+<body>
+  <div class="carousel-container clearfix">
+    <div class="carousel-list">
+      <div class="carousel-track clearfix">
+        <div class="slide fade" data-index='0'>
+          <img src="../images/img_nature_wide.jpg" alt="Caption Text">
+        </div>
+        <div class="slide fade" data-index='1'>
+          <img class="image" src="../images/img_fjords_wide.jpg" alt="Caption Text">
+        </div>
+        <div class="slide fade" data-index='2'>
+          <img src="../images/img_lights_wide.jpg" alt="Caption Text">
+        </div>
+        <div class="slide fade" data-index='3'>
+          <img src="../images/img_mountains_wide.jpg" alt="Caption Text">
+        </div>
+      </div>
+      <a class="prev">&#10094;</a>
+      <a class="next">&#10095;</a>
+    </div>
+    <div class="dots-area"> 
+      <span class="dot"></span> 
+      <span class="dot"></span> 
+      <span class="dot"></span>
+      <span class="dot"></span> 
+    </div>
+  </div>
+
+  <script>
+   function $(selector, node) {    
+     return node ? node.querySelector(selector) : document.querySelector(selector)
+   }
+   function $$(selector) {
+     return Array.prototype.slice.call(document.querySelectorAll(selector))
+   }
+
+   var slides = $$('.carousel-track > .slide'),
+       track = $('.carousel-track'),
+       dots = $$('.dot')
+
+   var slideIndex = 0
+   const distance = 600,
+         pre = -1,
+         pos = 1
+   function main() {
+     slides = appendSlide()
+     showSlide(slideIndex = 1)
+     bindEvent()
+   }
+
+   function cloneSlide(src, index) {
+     let div = document.createElement('div')
+     div.className = 'slide slide-cloned fade'
+     div.setAttribute('data-index',index)
+     let img = document.createElement('img')
+     img.src = src
+     div.appendChild(img)
+     return div
+   }
+   function appendSlide() {
+     let len = slides.length
+     track.insertBefore(cloneSlide($('img', slides[len-1]).src, len-1), slides[0])
+     track.appendChild(cloneSlide($('img', slides[0]).src, 0))
+     return $$('.carousel-track > .slide')
+   }
+   function showSlide(index) {
+     track.style.left = (-distance*index) +'px'
+     if (index>=1 && index<=slides.length-2) {
+       dotsCheck()
+     }
+   }
+   function bindEvent() {
+     $('.prev').addEventListener('click', function() {
+       plusSlide(pre)
+     })
+     $('.next').addEventListener('click', function() {
+       plusSlide(pos)
+     })
+     $('.dots-area').addEventListener('click', function(e) {
+       var dot = e.target
+       if(dot.tagName === 'SPAN') {
+         slideIndex = dots.indexOf(dot)+1
+         showSlide(slideIndex)
+       }
+     })
+   }
+   function plusSlide(num) {
+     let len = slides.length
+     showSlide(slideIndex += num)
+     if (slideIndex === 0 && num === -1) {
+       slideIndex = len-2
+       showSlide(slideIndex)
+     }else if (slideIndex === len-1 && num === 1) {
+       slideIndex = 1
+       showSlide(slideIndex)
+     }
+   }
+   function dotsCheck() {
+     dots.forEach(function(item, index) {
+       if(index !== slideIndex-1 && item.classList.contains('active')) {
+         item.classList.remove('active')
+       }
+     })
+     dots[slideIndex-1].classList.add('active')
+   }
+   main()
+  </script>
+</body>
+</html>

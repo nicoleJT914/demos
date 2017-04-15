@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+    <title>waterfall</title>
+		<style type="text/css">
+      .container {
+        margin: 10px;
+        background: #f2f2f2;
+        padding: 15px 0;
+      }
+      .waterfall {
+        font-size: 0;
+        max-width: 1260px;
+        margin: 0 auto;
+     }
+      .item {
+        box-sizing: border-box;
+        border: 1px solid;
+        width: 200px;
+        height: 200px;
+        margin: 5px;
+        background: gold;
+        display: inline-block;
+        text-align: center;
+        font-size: 30px;
+        padding: 10px;
+      }
+      .item:nth-child(2n+1) {
+        height: 330px;
+        background: pink;
+      }
+      .item:nth-child(3n) {
+        height: 120px;
+        background: royalblue;
+      }
+      .item:nth-child(5n) {
+        height: 70px;
+        background: seagreen;
+      }
+		</style>
+	</head>
+	<body>
+    <div class="container">
+      <div class="waterfall">
+        <div class="item">1</div>
+        <div class="item">2</div>
+        <div class="item">3</div>
+        <div class="item">4</div>
+        <div class="item">5</div>
+        <div class="item">6</div>
+        <div class="item">7</div>
+        <div class="item">8</div>
+        <div class="item">9</div>
+        <div class="item">10</div>
+        <div class="item">11</div>
+        <div class="item">12</div>
+        <div class="item">13</div>
+        <div class="item">14</div>
+        <div class="item">15</div>
+        <div class="item">16</div>
+        <div class="item">17</div>
+        <div class="item">18</div>
+        <div class="item">19</div>
+        <div class="item">20</div>
+        <div class="item">21</div>
+        <div class="item">22</div>
+        <div class="item">23</div>
+      </div>
+    </div>
+		<script type="text/javascript">
+      /* 思路：
+         排列第一行
+           检查有无剩余空间
+           有，排列下一个
+           最后获得纵轴最后元素数组（以纵轴坐标排序）
+         排列剩余行
+           从纵轴数组中取出最小的
+           检查剩余空间，有，排列下一个
+           更新纵轴数组
+         设置waterfall的position和高度
+      */
+        function WaterFall(container) {
+          if (typeof container === 'string') {
+            this.container = document.querySelector(container)
+            this.items = Array.prototype.slice.call(this.container.children)
+            this.init()
+          }
+        }
+
+        WaterFall.prototype.init = function() {
+          if (this.items.length) {
+              this._arrangeFirstElement()
+          }
+          this._arrangeFirstRow()
+          this._sortHeight = new _SortHeight(this.items.slice(0,this.index))
+          this._arrangeSmallestColumn()
+          this._adjustWaterfall()
+        }
+        
+        WaterFall.prototype._arrangeFirstElement = function() {
+          this.index = 0
+          _arrangeEl(this.items[this.index++], 0, 0)
+        }
+
+        WaterFall.prototype._arrangeFirstRow = function() {
+          var items = this.items
+          for (; this.index<items.length && _isThereSpace.call(this);this.index++) {
+            _arrangeEl(items[this.index], right(items[this.index-1]) + margin(items[this.index], 'left'),  y(items[this.index-1]))
+          }
+        }
+
+        WaterFall.prototype._arrangeSmallestColumn = function() {
+          for (; this.index<this.items.length; this.index++) {
+            var min = this._sortHeight.min(),
+                el = this.items[this.index]
+            _arrangeEl(el, x(min), bottom(min)+margin(el, 'top'))
+            this._sortHeight.add(el)
+          }
+        }
+        
+        WaterFall.prototype._adjustWaterfall = function() {
+          var max = this._sortHeight.max()
+          this.container.style.position = 'relative'
+          this.container.style.height = px(bottom(max)+margin(max, 'bottom'))
+        }
+
+        /********************
+        * private functions
+        ********************/
+        function _arrangeEl(el, left, top) {
+            el.style.position = 'absolute'
+            el.style.left = px(left)
+            el.style.top = px(top)
+        }
+
+        function _isThereSpace() {
+          return right(this.items[this.index-1]) + width(this.items[this.index], true) <= width(this.container, false)
+        }
+
+        function _SortHeight(firstRow) {
+          _sort(firstRow)
+          this.add = function(el) {
+            firstRow.push(el)
+            _sort(firstRow)
+            firstRow.pop()
+          }
+          this.min = function() {
+            return firstRow[firstRow.length - 1]
+          }
+          this.max = function() {
+            return firstRow[0]
+          }
+        }
+
+        function _sort(firstRow) {
+          firstRow.sort(function(a, b) {
+            return bottom(b) - bottom(a)
+          })
+        }
+
+        var waterFall = new WaterFall('.waterfall')
+
+      /*(function waterfall(container) {
+        if (typeof container === 'string') {
+          var waterfall = document.querySelector('.waterfall')
+          function init() {
+            var items = Array.prototype.slice.call(waterfall.children)
+            if (items.length) {
+              arrangeFirstElement(items[0])
+            }
+            for (var i=1; i<items.length && isThereSpace(items, i);i++) {
+              arrangeFirstRow(items[i-1], items[i])
+            }
+            var firstRow = items.slice(0,i)
+            var sortHeight = new SortHeight(firstRow)
+            for (; i<items.length; i++) {
+              arrangeSmallestColumn(sortHeight.min(), items[i])
+              sortHeight.add(items[i])
+            }
+            adjustWaterfall(waterfall, sortHeight.max())
+          }
+
+          function arrangeFirstElement(el) {
+            arrangeEl(el, 0, 0)
+          }
+
+          function arrangeFirstRow(pre, cur) {
+              arrangeEl(cur, right(pre) + margin(cur, 'left'),  y(pre))
+          }
+
+          function arrangeSmallestColumn(min, el) {
+              arrangeEl(el, x(min), bottom(min)+margin(el, 'top'))
+          }
+          
+          function SortHeight(firstRow) {
+            sort(firstRow)
+            this.add = function(el) {
+              firstRow.push(el)
+              sort(firstRow)
+              firstRow.pop()
+            }
+            this.min = function() {
+              return firstRow[firstRow.length - 1]
+            }
+            this.max = function() {
+              return firstRow[0]
+            }
+          }
+
+          function sort(firstRow) {
+            firstRow.sort(function(a, b) {
+              return bottom(b) - bottom(a)
+            })
+          }
+          
+          function adjustWaterfall(waterfall, max) {
+            waterfall.style.position = 'relative'
+            waterfall.style.height = px(bottom(max)+margin(max, 'bottom'))
+          }
+
+          function arrangeEl(el, left, top) {
+            el.style.position = 'absolute'
+            el.style.left = px(left)
+            el.style.top = px(top)
+          }*/
+
+           /******************
+          * helper functions
+          ******************/
+          function px(num) {
+            return parseFloat(num) + 'px'
+          }
+          function isThereSpace(items, i) {
+            return right(items[i-1]) + width(items[i], true) <= width(waterfall, false)
+          }
+          function style(el) {
+            return window.getComputedStyle(el)
+          }
+          function x(el) {
+            return parseFloat(style(el).left)
+          }
+          function y(el) {
+            return parseFloat(style(el).top) 
+          }
+          function margin(el, direction) {
+            return parseFloat(style(el)['margin-'+direction]) || 0
+          }
+          function width(el, boolean) {
+            return boolean ? parseInt(style(el).width)+parseFloat(margin(el, 'left')+margin(el, 'right')) : parseInt(style(el).width)
+          }
+          function height(el) {
+            return parseInt(style(el).height)
+          }
+          function right(el) {
+            return x(el)+width(el)+margin(el, 'right')
+          }
+          function bottom(el) {
+            return y(el)+height(el)+margin(el, 'bottom')
+          }
+
+        /*init()
+        }else {
+          throw ('The argument is required!')
+        }
+      })('.waterfall')*/
+		</script>
+	</body>
+</html>

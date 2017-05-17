@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>lazy load on images</title>
+    <style type="text/css">
+      ul  {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .clearfix::after {
+        content: '';
+        display: block;
+        clear: both;
+      }
+      ul {
+        margin: 20px auto;
+        width: 920px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+      }
+      li {
+        float: left;
+        margin: 5px;
+        width: 284px;
+      }
+      img {
+        border: 1px solid #ccc;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="clearfix"></ul>
+    <script>
+      // generate html structure
+      var range_15 = Array.from(Array(15).keys())
+      var imgPlaceholder = "http://kejian.jirengu.com/data/fe/%E8%AF%BE%E4%BB%B6/32-%E6%87%92%E5%8A%A0%E8%BD%BD/code/blank.jpg" 
+      var imgListDom = range_15.map(function(item, index) {
+        return `
+          <li><img src="${imgPlaceholder}" data-lazy="http://cdn.jirengu.com/book.jirengu.com/img/${index+1}.jpg"></li>
+        `
+      })
+      var imgListDom = imgListDom.concat(imgListDom)
+      var containerDom = document.querySelector('ul')
+      containerDom.innerHTML = imgListDom.join('')
+      // Lazy constructor
+      function Lazy(data) {
+        this.data = data
+        this.clock
+        // first page check
+        this.data.addEventListener('load', this.render.bind(this))
+        //this.render()
+        // bindEvents
+        this.listen()
+      }
+
+      Lazy.prototype.render = function() {
+        if (this.scrolledIntoView() && !this.srcUnchanged()) {
+          setTimeout(this.loadImgs.bind(this), 300)
+          //this.loadImgs()
+        }
+      }
+
+      Lazy.prototype.scrolledIntoView = function() {
+        var rect = this.data.getBoundingClientRect()
+        console.log(rect)
+        var rectTop = rect.top, rectBottom = rect.bottom
+        if (rectTop <= window.innerHeight && rectBottom >= 0) {
+          return true
+        }else {
+          return false
+        }
+      }
+
+      Lazy.prototype.srcUnchanged = function() {
+        return this.data.getAttribute('src') === this.data.getAttribute('data-lazy')
+      }
+
+      Lazy.prototype.loadImgs = function(item) {
+        var _this = this
+        this.data.addEventListener('error', function() {
+          _this.data.setAttribute('src', 'http://kejian.jirengu.com/data/fe/%E8%AF%BE%E4%BB%B6/32-%E6%87%92%E5%8A%A0%E8%BD%BD/code/blank.jpg')
+        })
+        let dataSrc = this.data.getAttribute('data-lazy')
+        this.data.setAttribute('src', dataSrc)
+      }
+      
+      Lazy.prototype.listen = function() {
+        var _this = this
+        window.addEventListener('scroll', function(e) {
+          clearTimeout(_this.clock)
+          _this.clock = setTimeout(_this.render.bind(_this), 200)
+          //_this.render()
+        })
+      }
+      // initial
+      var lazy = Array.prototype.slice.call(document.querySelectorAll('img[data-lazy]')).forEach(function(item) {
+        new Lazy(item)      
+      })
+    </script>
+  </body>
+</html>

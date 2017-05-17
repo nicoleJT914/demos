@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>tab</title>
+    <style>
+      *{ 
+        box-sizing: border-box; 
+      }
+      body{ 
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+      }
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none
+      }
+      .tabs-container {
+        width: 460px;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 15px;
+        margin: 30px;
+      }
+      .tabs-nav {
+        display: flex;
+        text-align: center;
+        margin-bottom: 15px;
+      }
+      .tabs-nav > li {
+        flex-grow: 1;
+        padding: 10px 0;
+        border-bottom: 1px solid #ccc;
+        cursor: pointer;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+      }
+      .tabs-nav > li:hover {
+        background: #eee;
+        color: #23527c;
+      }
+      .tabs-nav > li.active {
+        border: 1px solid #ccc;
+        border-bottom: none;
+      }
+      .tabs-nav > li.active:hover {
+        background: #fff;
+        color: #000;
+      }
+      .tabs-panels > li {
+        display: none;
+      }
+      .tabs-panels > li.active {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+      .panel-contents {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #eee;
+        line-height: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tabs-container">
+      <div class="tabs-content tabs1">
+        <ul class="tabs-nav">
+          <li>title 1</li>
+          <li>title 2</li>
+        </ul>
+        <ul class="tabs-panels">
+          <li>
+            <div class="panel-contents">1</div>
+          </li>
+          <li>
+            <div class="panel-contents">2</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tabs-container">
+      <div class="tabs-content tabs2">
+        <ul class="tabs-nav">
+          <li>title 1</li>
+          <li>title 2</li>
+          <li>title 3</li>
+          <li>title 4</li>
+        </ul>
+        <ul class="tabs-panels">
+          <li>
+            <div class="panel-contents">1</div>
+          </li>
+          <li>
+            <div class="panel-contents">2</div>
+          </li>
+          <li>
+            <div class="panel-contents">3</div>
+          </li>
+          <li>
+            <div class="panel-contents">4</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tabs-container">
+      <div class="tabs-content tabs3">
+        <ul class="tabs-nav">
+          <li>title 1</li>
+          <li>title 2</li>
+          <li>title 3</li>
+          <li>title 4</li>
+        </ul>
+        <ul class="tabs-panels">
+          <li>
+            <div class="panel-contents">1</div>
+          </li>
+          <li>
+            <div class="panel-contents">2</div>
+          </li>
+          <li>
+            <div class="panel-contents">3</div>
+          </li>
+          <li>
+            <div class="panel-contents">4</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  <script>
+    /*
+    * 导航栏ul的类名：tabs-nav
+    * 面板ul的类名：tabs-panels
+    */
+    function Tabs(container) {
+      this.tab = container
+      this.init().bindEvents().defaultTab()
+    }
+    Tabs.prototype.init = function() {
+      this.tabNav = this.tab.querySelectorAll('.tabs-nav')[0]
+      this.tabLis = Array.prototype.slice.call(this.tabNav.getElementsByTagName('li'))
+      this.tabPanels = Array.prototype.slice.call(this.tab.querySelectorAll('.tabs-panels > li'))
+      return this
+    }
+    Tabs.prototype.bindEvents = function() {
+      var that = this
+      that.tabNav.addEventListener('click',function(e) {
+        var li = e.target
+        that.tabLis.forEach(function(item) {
+          item.classList.remove('active')
+        })
+        li.classList.add('active')
+        var index = that.tabLis.indexOf(li)
+        that.tabPanels.forEach(function(item) {
+          item.classList.remove('active')
+        })
+        that.tabPanels[index].classList.add('active')
+      })
+      return that
+    }
+    Tabs.prototype.defaultTab = function() {
+      this.tabLis[0].click()
+      return this
+    }
+    var tabs1 = new Tabs(document.querySelectorAll('.tabs1')[0])
+    var tabs2 = new Tabs(document.querySelectorAll('.tabs2')[0])
+    var tabs3 = new Tabs(document.querySelectorAll('.tabs3')[0])
+  </script>
+  </body>
+</html>

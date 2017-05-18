@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>modal component</title>
+  <style>
+    body > button {
+      background: none;
+      border: 2px solid #337ab7;
+      color: #337ab7;
+      font-size: 1em;
+      font-weight: 400;
+      padding: .5em 1.5em;
+      margin: .5em;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    body > button:focus {
+      outline: 0;
+    }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #000;
+      background-color: rgba(0,0,0,.4);
+      z-index: 100;
+    }
+    .modal-content {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 450px;
+      border-radius: 8px;
+      background: #fefefe;
+      padding-top: .5em;
+      padding-bottom: .5em;
+      /* box-shadow: 0 0 0 1000px rgba(0,0,0,.5); */
+    }
+    .modal-content button {
+      background: none;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      padding: .3em .7em;
+      cursor: pointer;
+    }
+    .modal-content button:focus {
+      outline: 0;
+    }
+    .modal-content .modal-item {
+      padding: 1em;
+    }
+    .modal-content header.modal-item {
+      font-weight: 400;
+      font-size: 1.2em;
+      padding: .5em 1em;
+      display: flex;
+      justify-content: space-between;
+      /*border-bottom: 1px solid #e5e5e5;*/
+    }
+    .modal-content .icon-close {
+      color: #aaa;
+      font-weight: bold;
+    }
+    .modal-content header .icon-close:hover,
+    .modal-content header .icon-close:focus {
+      color: #000;
+      cursor: pointer;
+    }
+    .modal-content main {
+      line-height: 1.2;
+    }
+    .modal-content footer {
+      /*border-top: 1px solid #e5e5e5;*/
+      text-align: right;
+    }
+    .modal-content footer button {
+      border: 1px solid #ccc;
+      letter-spacing: 3px;
+    }
+    .modal-content footer button:focus {
+      background: #337ab7;
+      color: #fff;
+    }
+    .modal-content footer button + button {
+      margin-left: 10px;
+    }
+    .modal-overflow .modal-content{
+      overflow-y: scroll;
+      max-height: 500px;
+    }
+    .modal-overflow footer button:last-child {
+      margin-right: 10px;
+    }
+    .modal-sticky footer {
+      visibility: hidden;
+      opacity: 0;
+      bottom: 0;
+      left: 0;
+      background: #ccc;
+      margin: 0 -.5em -.5em -.5em
+    }
+    .modal-sticky footer button {
+      background: #fff;
+    }
+    .modal-visible footer {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity .3s;
+    }
+  </style>
+</head>
+
+<body>
+  <button id='basic-modal'>basic modal</button>
+  <button id='button-modal'>modal with button</button>
+  <button id='scroll-modal'>modal with scroll</button>
+  <button id='sticky-modal'>modal with stickyFooter</button>
+  <script>
+  /*****************
+  data structure
+  var data = {
+    title: string or node,
+    content: string or node,
+    footer: {
+      buttons: [button1, button2],
+      buttonCallbacks: [fn1, fn2]
+    }
+    isOverflow: true or false
+  }
+  *****************/
+    function Modal(options) {
+      var defaults = {
+        title: '',
+        content: '',
+        footer: null,
+      }
+      this.options = Object.assign({}, defaults, options)
+      this.getHtml()
+      this.bindEvents()
+      this.mount()
+    }
+
+    //生成modal所需的HTML结构
+    Modal.prototype.getHtml = function() {
+      var {
+        title, content, footer
+      } = this.options
+      this.container = this._createElement('div', 'modal')
+      this.panel = this._createElement('div', 'modal-content')
+      this.container.appendChild(this.panel)
+      this.setTitle(title)
+      this.setContent(content)
+      this.setFooter(footer)
+    }
+
+    Modal.prototype.setTitle = function(title) {
+      var header = this._createElement('header', 'modal-item')
+      var titleHeader = this._createElement('div', 'modal-title')
+      this.closeIcon = this._createElement('span', 'icon-close', '&times;')
+      if (typeof title === 'string') {
+        titleHeader.innerHTML = title
+      } else {
+        titleHeader.appendChild(title)
+      } 
+      header.appendChild(titleHeader)
+      header.appendChild(this.closeIcon)
+      this.panel.appendChild(header)
+    }
+
+    Modal.prototype.setContent = function(content) {
+      var main = this._createElement('main', 'modal-item')
+      if (typeof content === 'string') {
+        main.innerHTML = `
+          <div>${content}</div>
+        `
+      } else {
+        main.appendChild(content)
+      }
+      this.panel.appendChild(main)
+    }
+
+    Modal.prototype.setFooter = function(footer) {
+      if (!footer) return
+      this.buttons = footer.buttons
+      this.buttonCallbacks = footer.buttonCallbacks
+      this.sticky = footer.stickyFooter
+      var footer = this.footer = this._createElement('footer', 'modal-item')
+      footer.innerHTML = this.buttons.map(function(text, index) {
+        return `<button data-index=${index}>${text}</button>`
+      }).join('')
+      this.panel.appendChild(footer)
+    }
+
+    Modal.prototype.bindEvents = function() {
+      var _this = this
+      this.closeIcon.addEventListener('click', _this.closeModal.bind(_this))
+      if(this.footer) {
+        this.footer.addEventListener('click', function(e) {
+          if (e.target.tagName === 'BUTTON') {
+            var btnIndex = parseInt(e.target.getAttribute('data-index'), 10)
+            if (_this.buttonCallbacks[btnIndex].call() !== false) {
+              _this.closeModal.call(_this)
+            }
+          }
+        })
+      }
+      window.addEventListener('click', function(e) {
+        if (e.target === _this.container) {
+          _this.closeModal.call(_this)
+        }
+      })
+    }
+
+    Modal.prototype.closeModal = function() {
+      this.container.parentNode.removeChild(this.container)
+    }
+
+    // 将modal的html结构加到在body中
+    Modal.prototype.mount = function() {
+      document.body.insertBefore(this.container, document.body.firstChild)
+      if (this.isOverflow()) {
+        this.container.classList.add('modal-overflow')
+        if (this.sticky) {
+          this.container.classList.add('modal-sticky')
+          this.stickyFooter()
+        }
+      }
+    }
+
+    Modal.prototype.isOverflow = function() {
+      return window.innerHeight < this.panel.clientHeight
+    }
+
+    Modal.prototype.stickyFooter = function() {
+      var panel = this.panel
+      var _this = this
+      panel.addEventListener('scroll', function() {
+        if (panel.scrollHeight == panel.scrollTop + panel.clientHeight) {
+          _this.container.classList.add('modal-visible')
+        }
+      })
+      //if (panel.scrollHeight == panel.srcollUp + )
+    }
+    /*****************
+     helper function
+     ******************/
+    Modal.prototype._createElement = function(tagName, className, text) {
+      var element = document.createElement(tagName)
+      element.classList.add(className)
+      if(text) {
+        element.innerHTML = text
+      }
+      return element
+    }
+    /*
+      instance
+    */
+    document.getElementById('basic-modal').addEventListener('click', function() {
+      var modal = new Modal({
+        title: '国际邮费说明',
+        content: '不满$100收取邮费100CNY，满$100免邮费'
+      })
+    })
+
+    document.getElementById('button-modal').addEventListener('click', function() {
+      var modal = new Modal({
+        title: '标题',
+        content: '你确定要删除此项吗?',
+        footer: {
+          buttons: ['取消', '确定'],
+          buttonCallbacks: [function() {
+            console.log('取消了')
+          }, function() {
+            alert('点击确定')
+            return false
+          }]
+        }
+      })
+    })
+
+    document.getElementById('scroll-modal').addEventListener('click', function() {
+      var content = '<p>这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字</p><img src="img/wave.jpg"><p>这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字</p>'
+      var modal = new Modal({
+        title: '会员积分卡兑换准则',
+        content: content,
+        footer: {
+          buttons: ['关闭'],
+          buttonCallbacks: [function() {
+            console.log('关闭了')
+          }]
+        }
+      })
+    })
+
+    document.getElementById('sticky-modal').addEventListener('click', function() {
+      var content = '<p>这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字</p><img src="img/wave.jpg"><p>这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字这是一大段文字</p>'
+      var modal = new Modal({
+        title: '会员积分卡兑换准则',
+        content: content,
+        footer: {
+          buttons: ['取消', '同意'],
+          buttonCallbacks: [function() {
+            console.log('取消了')
+          }, function() {
+            console.log('同意')
+            return false
+          }],
+          stickyFooter: true
+        }
+      })
+    })
+
+    
+  </script>
+</body>
+  
+</html>

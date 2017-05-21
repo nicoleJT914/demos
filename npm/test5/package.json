@@ -1,0 +1,20 @@
+{
+  "name": "nicole-weather",
+  "version": "1.0.1",
+  "description": "get the weather condition of specified city",
+  "main": "index.js",
+  "bin": {
+    "weather": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "weather"
+  ],
+  "author": "nicole",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.16.1"
+  }
+}

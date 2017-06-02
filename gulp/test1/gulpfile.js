@@ -22,7 +22,7 @@ gulp.task('js', function() {
       .pipe(jshint.reporter('default'))*/
       .pipe(concat('merge.js'))
       .pipe(uglify())
-      .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
+      //.on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
       .pipe(gulp.dest('./dist/js/'))
 })
 gulp.task('img', function() {

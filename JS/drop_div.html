@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .box {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: red;
+        cursor: move;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="box" class="box"></div>
+    <script>
+     (function(){
+        var box = document.getElementById('box');
+        var dragging = false;
+        var boxX, boxY, mouseX, mouseY, offsetX, offsetY;
+        box.addEventListener('mousedown', down);
+        document.addEventListener('mousemove', move);
+        document.addEventListener('mouseup', up);
+        function down(e) {
+          dragging = true;
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+          boxX = box.offsetLeft;
+          boxY = box.offsetTop;
+          offsetX = e.offsetX || mouseX-boxX;
+          offsetY = e.offsetY || mouseY-boxY;
+        }
+        function move(e) {
+          if (dragging) {
+            var x = e.clientX - mouseX;
+            var y = e.clientY - mouseY;
+            var maxWidth = document.documentElement.clientWidth - boxX - box.clientWidth;
+            var maxHeight = document.documentElement.clientHeight - boxY - box.clientHeight;
+            x = x > 0 ? Math.min(maxWidth, x) : Math.max(-boxX, x);
+            y = y > 0 ? Math.min(maxHeight, y) : Math.max(-boxY, y);
+            box.style.left = boxX + x + 'px';
+            box.style.top = boxY + y + 'px';
+          }
+        }
+        function up() {
+          dragging = false;
+        }
+      })()
+    </script>
+  </body>
+</html>

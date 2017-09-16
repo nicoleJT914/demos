@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>drag and drop</title>
+  <style>
+    #container {
+      display: inline-block;
+      min-height: 200px;
+      min-width: 400px;
+      padding: 30px;
+      border: 3px solid #ddd;
+      border-radius: 10px;
+    }
+    .preview {
+      max-width: 400px;
+    }
+    #files-list {
+      position: absolute;
+      top: 0;
+      left: 600px;
+    }
+    #list {
+      width: 500px;
+    }
+    #list .preview {
+      max-width: 300px;
+    }
+  
+  </style>
+</head>
+<body>
+  <div id="section">
+    <p>把图片拖到入框内：</p>
+    <div id="container"></div>
+    <div id="files-list">
+      <p>已拖入的文件：</p>
+      <ul id="list"></ul>
+    </div>
+  </div>
+  <script>
+    (function() {
+      if (window.FileReader) {
+        var list = document.getElementById('list')
+        var container = document.getElementById('container')
+        bindEvents()
+
+        function bindEvents() {
+          container.addEventListener('dragenter', handleDragEnter)
+          container.addEventListener('dragover', handleDragOver)
+          container.addEventListener('drop', handleFileSelect)
+          container.addEventListener('dragLeave', handleDragLeave)
+        }
+        function handleDragEnter(e) {
+          e.target.style.borderStyle = 'dashed' 
+        }
+        function handleDragOver(e) {
+          e.preventDefault()
+          e.stopPropagation() // 兼容ff
+        }
+        function handleFileSelect(e) {
+          e.preventDefault()
+          e.stopPropagation()
+
+          var files = e.dataTransfer.files
+          for (var i=0, len=files.length; i<len; i++) {
+            debugger
+            var file = files[i]
+            var type = file.type ? file.type : 'n/a'
+            var reader = new FileReader()
+            var show = function(file, img) {
+              list.innerHTML += '<li><strong>'+file.name+'</strong> ('+type+') - '+file.size+' bytes<p>'+img+'</p></li>'
+              container.innerHTML = img
+            }
+            if (isImg(type)) {
+              reader.onload = (function(item) {
+                return function(e) {
+                  img = '<img class="preview" src="'+e.target.result+'"'+item.name+'"/>'
+                  show(item, img)
+                }
+              })(file)
+              reader.readAsDataURL(file)
+            }else {
+              img = '拖入文件格式不是图片！'
+              show(file, img)
+            }
+          }
+        }
+        function handleDragLeave(e) {
+          e.target.style.borderStyle = ''
+        }
+        function isImg(type) {
+          switch(type) {
+            case 'image/jpeg':
+            case 'image/png':
+            case 'image/gif':
+            case 'image/bmp':
+            case 'image/jpg':
+              return true;
+            default:
+              return false;
+          }
+        }
+      }else {
+        document.getElementById('section').textContent = '您所使用的浏览器不支持文件读取'
+      }
+    })()
+  </script>
+</body>
+</html>
